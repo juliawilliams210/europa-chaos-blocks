@@ -1,0 +1,33 @@
+name: Tests
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  pytest:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # step 1: check out repository source code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # step 2: install and configure Miniforge environment from environment.yml
+      - name: Set up Miniforge
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          environment-file: environment.yml
+          activate-environment: chaos_ml_env
+          auto-activate-base: false
+          use-mamba: true
+
+      # step 3: run Pytest test suite with verbose output
+      - name: Run Pytest
+        shell: bash -el {0}
+        run: |
+          pytest tests/ -v
