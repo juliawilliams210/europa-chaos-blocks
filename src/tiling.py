@@ -5,13 +5,15 @@ from rasterio.windows import Window
 import cv2
 
 
-def generate_tiles(img_path: str,
-                   mask_path: str,
-                   out_img_dir: str,
-                   out_mask_dir: str,
-                   chip_size: int = 256,
-                   stride: int = 128,
-                   apply_flipnslide: bool = False):
+def generate_tiles(
+    img_path: str,
+    mask_path: str,
+    out_img_dir: str,
+    out_mask_dir: str,
+    chip_size: int = 256,
+    stride: int = 128,
+    apply_flipnslide: bool = False
+):
     """
     Generate image and mask tiles from a given TIFF image and its
     corresponding TIFF mask. The tiles are saved to the specified output
