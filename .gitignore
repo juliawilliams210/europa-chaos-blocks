@@ -1,1 +1,11 @@
 .DS_Store
+.pyc
+
+# data files
+/data/raw/tiff_images/
+/data/tiled/
+
+# python cache files
+__pycache__/
+*.py[cod]
+*$py.class
