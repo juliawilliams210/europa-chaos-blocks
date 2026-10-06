@@ -53,7 +53,7 @@ def build_coco_json(
         # add the image info to COCO
         coco_format["images"].append({
             "id": image_id,
-            "file_name": filename,  # just the file name
+            "file_name": filename.replace('.tif', '.jpg'),
             "width": width,
             "height": height
         })

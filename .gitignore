@@ -4,6 +4,7 @@
 # data files
 /data/raw/tiff_images/
 /data/tiled/
+/data/ml_dataset/
 
 # python cache files
 __pycache__/
