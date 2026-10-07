@@ -84,6 +84,13 @@ def stitch_images_and_masks(
         region = gpd.read_file(json)
         region_name = os.path.splitext(os.path.basename(json))[0]
 
+        if 'Block_Plat' in region.columns:
+            region = region[region['Block_Plat'] == 'Plate']
+
+            if region.empty:
+                print(f"[SKIP] {region_name} has no Plates.")
+                continue
+
         if region.crs is None:
             region = region.set_crs(region_crs)
 

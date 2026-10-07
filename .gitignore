@@ -5,7 +5,12 @@
 /data/raw/tiff_images/
 /data/tiled/
 /data/ml_dataset/
-/data/runs/
+/data/preprocessed_plates/
+/data/tiled_plates/
+/data/ml_dataset_plates/
+
+# results files
+/results/runs/
 
 # python cache files
 __pycache__/
