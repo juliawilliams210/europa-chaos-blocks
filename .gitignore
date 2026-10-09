@@ -3,11 +3,10 @@
 
 # data files
 /data/raw/tiff_images/
-/data/tiled/
-/data/ml_dataset/
-/data/preprocessed_plates/
-/data/tiled_plates/
-/data/ml_dataset_plates/
+/data/plates_cropped/
+/data/all_cropped/
+/data/all/
+/data/plates/
 
 # results files
 /results/runs/
