@@ -41,7 +41,9 @@ def stitch_images_and_masks(
         img_dir: str,
         out_dir: str,
         region_crs: str = "ESRI:104915",
-        padding_factor: float = 0.5):
+        padding_factor: float = 0.5,
+        plates_only: bool = False,
+):
     """
     Stitches intersecting TIFFs around a GeoJSON region and generates a uint16
     Instance Mask.
@@ -65,6 +67,9 @@ def stitch_images_and_masks(
         region bounds. The default is 0.5, meaning the stitched image will be
         padded by 50% of the regions width and height.
 
+    plates_only: bool, optional
+        If True, only include objects labelled as plates. Default is False.
+
     Returns:
     --------
     None
@@ -84,15 +89,16 @@ def stitch_images_and_masks(
         region = gpd.read_file(json)
         region_name = os.path.splitext(os.path.basename(json))[0]
 
-        if 'Block_Plat' in region.columns:
-            region = region[region['Block_Plat'] == 'Plate']
+        if plates_only is True:
+            if 'Block_Plat' in region.columns:
+                region = region[region['Block_Plat'] == 'Plate']
 
-            if region.empty:
-                print(f"[SKIP] {region_name} has no Plates.")
-                continue
+                if region.empty:
+                    print(f"[SKIP] {region_name} has no Plates.")
+                    continue
 
-        if region.crs is None:
-            region = region.set_crs(region_crs)
+            if region.crs is None:
+                region = region.set_crs(region_crs)
 
         # find all TIFFs that intersect this region
         intersecting_tiffs = []
