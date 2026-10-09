@@ -11,6 +11,9 @@
 # results files
 /results/runs/
 
+# figures
+/figures/
+
 # python cache files
 __pycache__/
 *.py[cod]
