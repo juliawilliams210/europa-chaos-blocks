@@ -4,7 +4,7 @@ import numpy as np
 import geopandas as gpd
 import rasterio
 from rasterio.merge import merge
-from rasterio.features import rasterize
+from rasterio.features import rasterize, geometry_mask
 from shapely.geometry import box
 
 
@@ -40,6 +40,7 @@ def stitch_images_and_masks(
         geojson_dir: str,
         img_dir: str,
         out_dir: str,
+        boundary_shp_path: str = None,
         region_crs: str = "ESRI:104915",
         padding_factor: float = 0.5,
         plates_only: bool = False,
@@ -81,6 +82,12 @@ def stitch_images_and_masks(
     os.makedirs(mask_out_dir, exist_ok=True)
 
     tiffs = build_image_index(img_dir)
+
+    # Load boundary shapefile once if provided
+    boundaries = None
+    if boundary_shp_path and os.path.exists(boundary_shp_path):
+        boundaries = gpd.read_file(boundary_shp_path)
+        print(f"Loaded boundaries: {os.path.basename(boundary_shp_path)}")
 
     # loop through the geojson files
     for json in sorted(glob.glob(os.path.join(geojson_dir, "*.json"))):
@@ -165,6 +172,30 @@ def stitch_images_and_masks(
             fill=0,
             dtype='uint16'
         )
+
+        if boundaries is not None:
+            # find the polygon for this specific region
+            region_boundary = boundaries[boundaries['region'] == region_name]
+
+            if region_boundary.empty:
+                print(f"[WARN] {region_name} not found in shapefile.")
+            else:
+                # reproject to match the image CRS exactly
+                region_boundary = region_boundary.to_crs(target_crs)
+
+                # create boolean mask
+                bg_mask = geometry_mask(
+                    geometries=region_boundary.geometry,
+                    out_shape=img_data.shape,
+                    transform=out_trans,
+                    invert=False
+                )
+
+                # turn the pixels outside the polygon into empty space
+                img_data[bg_mask] = np.nan
+
+                # ensure no blocks were accidentally drawn outside the boundary
+                mask[bg_mask] = 0
 
         # save the stitched image as a geoTIFF
         img_out_path = os.path.join(img_out_dir, f"{region_name}.tif")

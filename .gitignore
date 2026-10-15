@@ -2,9 +2,13 @@
 .pyc
 
 # data files
+/data/new_blocks/
 /data/raw/tiff_images/
+/data/raw/new_geojson_blocks/
+data/raw/chaos_borders/
 /data/plates_cropped/
 /data/all_cropped/
+/data/all_cropped_masked/
 /data/all/
 /data/plates/
 
