@@ -1,7 +1,6 @@
 import os
 import numpy as np
 import rasterio
-from rasterio.windows import Window
 import cv2
 
 
@@ -90,13 +89,17 @@ def generate_tiles(
         for y in range(0, height, stride):
             for x in range(0, width, stride):
 
-                # do not generate a tile if it goes past the image bounds
-                if y + chip_size > height or x + chip_size > width:
-                    continue
+                # Ensure we don't go out of bounds by shifting the window back
+                # This guarantees the right/bottom edges are ALWAYS captured!
+                y_start = min(y, height - chip_size)
+                x_start = min(x, width - chip_size)
 
-                window = Window(x, y, chip_size, chip_size)
-                img_chip = src_img.read(1, window=window)
-                mask_chip = src_mask.read(1, window=window)
+                img_chip = full_img[
+                    y_start:y_start+chip_size, x_start:x_start+chip_size
+                ]
+                mask_chip = full_mask[
+                    y_start:y_start+chip_size, x_start:x_start+chip_size
+                ]
 
                 # filter out tiles that are mostly NaN
                 if np.isnan(img_chip).sum() > (chip_size * chip_size * 0.5):

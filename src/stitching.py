@@ -104,8 +104,8 @@ def stitch_images_and_masks(
                     print(f"[SKIP] {region_name} has no Plates.")
                     continue
 
-            if region.crs is None:
-                region = region.set_crs(region_crs)
+        if region.crs is None:
+            region = region.set_crs(region_crs)
 
         # find all TIFFs that intersect this region
         intersecting_tiffs = []
