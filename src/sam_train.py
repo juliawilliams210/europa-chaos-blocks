@@ -3,9 +3,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from tqdm import tqdm
 
-# import from other files
 from src.sam_dataset import ChaosSAMDataset
 from src.sam_builder import build_finetunable_sam
 
@@ -53,8 +51,7 @@ def run_sam_training(
             pixel_values = batch["pixel_values"].to(torch.float32).to(device)
             input_boxes = batch["input_boxes"].to(torch.float32).to(device)
             ground_truth = batch["ground_truth_mask"].to(
-                torch.float32).to(device
-                )
+                torch.float32).to(device)
 
             optimizer.zero_grad()
 
@@ -77,12 +74,14 @@ def run_sam_training(
             # print an update every 100 batches so you know it hasn't crashed
             if batch_count % 100 == 0:
                 print(
-                    f"Batch {batch_count}/{len(train_loader)} - Loss: {loss.item():.4f}"
+                    f"Batch {batch_count}/{len(train_loader)} -"
+                    f"Loss: {loss.item():.4f}"
                 )
 
         avg_loss = epoch_loss / len(train_loader)
         print(
-            f"Epoch [{epoch+1}/{epochs}] Complete. Average Loss: {avg_loss:.4f}\n"
+            f"Epoch [{epoch+1}/{epochs}] Complete."
+            f"Average Loss: {avg_loss:.4f}\n"
         )
 
     # save
